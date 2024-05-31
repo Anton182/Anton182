@@ -98,7 +98,7 @@ Note the little trick to get the sign bit from a 0 or a 1 into a -1 or a 1. Also
 
 Let's take an example like the (approximate) number `-1.724`. It's underlying representation would look like this:
 
-<img src="../../../assets/fast-inverse-sqrt/normal.png">
+<img src="./assets/fast-inverse-sqrt/normal.png">
 
 One interesting thing is that the exponent is actually stored in a biased format. The actual exponent value is $e = E - 127$. This allows two floating point numbers to be compared as if they were unsigned integers, which is a rather large benefit when it comes to building hardware accelerated floating point units.
 
@@ -108,17 +108,17 @@ $$
 N = -1^S \times 2^{-126} \times m
 $$
 
-<img src="../../../assets/fast-inverse-sqrt/subnormal.png">
+<img src="./assets/fast-inverse-sqrt/subnormal.png">
 
 The exponent is set to -126. The mantissa value doesn't have an added value of one (in fact it's implicitly $0 + m$), so the range actually represents 0 to just less than $2^{-126}$. Without this, it would be impossible to represent 0 or the very small numbers around 0, which can cause underflow errors when calculations on small numbers result in one of these impossible values.
 
 When the exponent $E$ is all ones, then the floating point value is one of the two other (quite famous) special types: `NaN` and `Infinity/-Infinity`. If $E = 255$, and $M = 0$, then the number represents an infinity, with the sign bit signifying positive or negative.
 
-<img src="../../../assets/fast-inverse-sqrt/infinity.png">
+<img src="./assets/fast-inverse-sqrt/infinity.png">
 
 $M \neq 0$, then the value is `NaN` (not a number), which is used to signify when an illegal operation has taken place, like $0/0$.
 
-<img src="../../../assets/fast-inverse-sqrt/nan.png">
+<img src="./assets/fast-inverse-sqrt/nan.png">
 
 ## 32-Bit Floats: Interpreting the bits
 
@@ -162,11 +162,11 @@ Contrast that with exponent value $E = 128, e = E - B = 1$, which represents the
 
 This relationship is *logarithmic*. If you take a series of evenly-spaced floating point numbers - say 256 of them - starting at 0, increasing by 0.25 each time, and interpret the bit pattern as an integer, you get the following graph:
 
-<img src="../../../assets/fast-inverse-sqrt/floats-as-ints.png">
+<img src="./assets/fast-inverse-sqrt/floats-as-ints.png">
 
 Now if we plot the result of taking `log2(x)` of those same 256 float values, we get this curve.
 
-<img src="../../../assets/fast-inverse-sqrt/log2.png">
+<img src="./assets/fast-inverse-sqrt/log2.png">
 
 Obviously the actual values on the graphs are wildly different, and the first one is much more *steppy*, but it's clear that the first is a close approximation of the second.
 
@@ -178,7 +178,7 @@ $$
 
 Here, $I_x$ is the raw bit pattern of a float in integer form. That is divided by by size of the mantissa, and the bias exponent is subtracted away. If we plot this directly against `log2(x)`, we get:
 
-<img src="../../../assets/fast-inverse-sqrt/log2-vs-ints.png">
+<img src="./assets/fast-inverse-sqrt/log2-vs-ints.png">
 
 Again, not a perfect mapping, but a pretty good approximation! We can also sub in the floating point terms, assuming a positive sign bit and a *normal* number:
 
